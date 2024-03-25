@@ -2,49 +2,59 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    static ArrayList<book> booklist = new ArrayList<>();
-    static ArrayList<Mahasiswa> userstudent = new ArrayList<>();
-    static Scanner inputswitchcase = new Scanner(System.in);
+    public static void main(String[] args) {
+        menu();
+    }
+
+
+//===============================================================================================================//
+    static ArrayList<BookList> arr_bookList = new ArrayList<>();
+
+//================================================================
+    static Scanner inputpilihan = new Scanner(System.in);
     static Scanner inputuser = new Scanner(System.in);
+//================================================================
     static String NIM;
+//================================================================
 
-    static class book{
-        String id, namabuku, author, category;
-        int stock;
+    static class BookList{
+        String idbuku, judulbuku, penulisbuku, kategoriBuku;
+        int stokbuku;
 
-        public book(String id, String namabuku, String author, String category, int stock){
-            this.id = id;
-            this.namabuku = namabuku;
-            this.author = author;
-            this.category = category;
-            this.stock = stock;
+
+        public BookList(String idbuku, String judulbuku, String penulisbuku, String kategoriBuku, int stokbuku){
+
+
+            this.idbuku          = idbuku;
+            this.judulbuku       = judulbuku;
+            this.penulisbuku     = penulisbuku;
+            this.kategoriBuku    = kategoriBuku;
+            this.stokbuku        = stokbuku;
+
+
+
         }
     }
-    static class Mahasiswa{
-        String nama,nim, fakultas, jurusan;
-        public Mahasiswa(String nama, String nim, String fakultas, String jurusan){
-            this.nama = nama;
-            this.nim = nim;
-            this.fakultas = fakultas;
-            this.jurusan = jurusan;
-        }
-    }
+
+//================================================================
     static void menu(){
+        Admin adminObj = new Admin();
         int menuloop = 0;
+
         do{
             System.out.println("\n==== Library System ====");
             System.out.print("\n1. Login as student\n2. Login as admin\n3. Exit\n");
             System.out.print("Choose option (1-3): ");
 
-            int pilihan = inputswitchcase.nextInt();
+            int pilihan = inputpilihan.nextInt();
             switch (pilihan) {
                 case 1:
-                    student.loginstudent();
+                    Student.loginstudent();
                     menustudent();
                     break;
 
                 case 2:
-                    admin.loginadmin();
+                    adminObj.validasiLogin();
                     menuadmin();
 
                     break;
@@ -62,21 +72,24 @@ public class Main {
     }
 
     static void menuadmin() {
-
+        Admin adminObject = new Admin();
         System.out.println("\n==== Admin Menu ====");
         System.out.println("\n1. Tambah Mahasiswa\n2. Daftar Mahasiswa\n3. Tambah Buku\n4. Logout");
         System.out.print("Choose option (1-3): ");
 
-        int pilihan = inputswitchcase.nextInt();
+        int pilihan = inputpilihan.nextInt();
         switch (pilihan) {
             case 1:
-                admin.addstudent();
+                Admin.addstudent();
+                menuadmin();
                 break;
             case 2:
-                admin.displaystudent();
+                Admin.displaystudent();
+                menuadmin();
                 break;
             case 3:
-                admin.addbook();
+                adminObject.inputBook();
+                menuadmin();
                 break;
             case 4:
                 menu();
@@ -90,56 +103,35 @@ public class Main {
     }
 
     static void menustudent(){
-
+        Student studentObject = new Student();
+        Student.displayInfo();
         System.out.println("\n==== Student Menu ====");
-        System.out.print("\n1. Daftar buku\n2. Pinjam buku\n3. Pengembalian buku\n4. Logout");
+        System.out.print("\n1. Buku Terpinjam\n2. Pinjam buku\n3. Kembalikan buku\n4. Logout");
         System.out.println("\n Choose option (1-3): ");
 
-        int pilihan = inputswitchcase.nextInt();
+        int pilihan = inputpilihan.nextInt();
         switch (pilihan){
             case 1:
-                student.showBorrowedBooks();
+                Student.showBorrowedBooks();
+                menustudent();
                 break;
             case 2:
-                System.out.println("\n====  Pinjam Buku  ====");
-                System.out.println("\nMasukkan id buku: ");
-                String idbukudipinjam = inputuser.nextLine();
-                for(Main.book i : Main.booklist){
-                    if(i.id.equals(idbukudipinjam)){
-                        if(i.stock > 0){
-                            i.stock--;
-                            System.out.println("Buku berhasil dipinjam");
-                        }else{
-                            System.out.println("Stok buku habis");
-                        }
-                    }
-                }
-
+                studentObject.displayBooks();
+                Student.borrowedBooks();
+                menustudent();
                 break;
             case 3:
-                System.out.println("\n====  Pengembalian Buku   ====");
-                System.out.print("\nMasukkan id buku: ");
-                String idbukupengembalian = inputuser.nextLine();
-                for(Main.book i : Main.booklist){
-                    if(i.id.equals(idbukupengembalian)){
-                        if(i.stock >= 0){
-                            i.stock++;
-                            System.out.println("Buku berhasil dikembalikan");
-                        }
-                    }
-                }
+                Student.showBorrowedBooks();
+                Student.returnBooks();
+                menustudent();
                 break;
             case 4:
-                student.logout();
-
+                Student.logout();
+                break;
             default:
                 System.out.print("Pilih 1-4");
                 menustudent();
         }
 
-    }
-
-    public static void main(String[] args) {
-        menu();
     }
 }
